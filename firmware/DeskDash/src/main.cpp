@@ -5,6 +5,7 @@
 
 TFT_eSPI tft = TFT_eSPI();
 
+lv_obj_t * label;
 
 // Funzione di callback: dice a LVGL come scrivere i pixel usando TFT_eSPI
 void my_disp_flush(lv_disp_drv_t *disp_drv, const lv_area_t *area, lv_color_t *color_p) {
@@ -39,13 +40,28 @@ void setup() {
     disp_drv.draw_buf = &draw_buf;
     lv_disp_drv_register(&disp_drv);
 
-  lv_obj_t * label = lv_label_create(lv_scr_act());
+  label = lv_label_create(lv_scr_act());
   lv_label_set_text(label, "Hello World!");
   lv_obj_set_style_text_color(label, lv_color_hex(0xff0000), 0);
   lv_obj_center(label);
+
+  static lv_obj_t * button = lv_btn_create(lv_scr_act());
+  lv_obj_center(button);
+  lv_obj_set_pos(button,0,50);
+  lv_obj_t * label1 = lv_label_create(button);
+  lv_label_set_text(label1,"Clicca qui");
+
 }
+
+int i = 0;
 
 void loop() {
   lv_timer_handler();
   delay(5);
+
+  if(millis()>=10000 && i==0){
+    Serial.println("Cambio la scritta");
+    lv_label_set_text(label,"Cambiato");
+    i=1;
+  }
 }

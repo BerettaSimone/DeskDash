@@ -9,7 +9,9 @@
 #define LV_MEM_CUSTOM      0
 #define LV_MEM_SIZE        (32U * 1024U)
 
-#define LV_TICK_CUSTOM     0
+#define LV_TICK_CUSTOM     1
+#define LV_TICK_CUSTOM_INCLUDE "Arduino.h"
+#define LV_TICK_CUSTOM_SYS_TIME_EXPR (millis())
 
 #define LV_FONT_MONTSERRAT_12    1
 #define LV_FONT_MONTSERRAT_16    1
