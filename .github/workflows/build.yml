@@ -15,7 +15,7 @@ jobs:
 
             - name: Prepara i segreti finti per la compilazione
               working-directory: firmware/DeskDash
-              run: cp include/env.example.h include/env.h
+              run: cp include/env_example.h include/env.h
 
             - name: Cache PlatformIO
               uses: actions/cache@v3
