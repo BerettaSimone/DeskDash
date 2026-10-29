@@ -13,6 +13,10 @@ jobs:
             - name: Checkout del codice
               uses: actions/checkout@v3
 
+            - name: Prepara i segreti finti per la compilazione
+              working-directory: firmware/DeskDash
+              run: cp include/env.example.h include/env.h
+
             - name: Cache PlatformIO
               uses: actions/cache@v3
               with:
