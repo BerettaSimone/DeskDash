@@ -1,4 +1,5 @@
 #include <MQTT.h>
+#include "mqtt_manager.h"
 #include "wifi_manager.h"
 #include <WiFi.h>
 #include "config.h"
@@ -6,16 +7,19 @@
 static MQTTClient mqtt_client;
 static WiFiClient net;
 
+static mqtt_on_message_cb on_message_cb = nullptr;
 static const char* saved_topic = nullptr;
-
 
 void messageReceived(String &topic, String &payload){
     Serial.printf("[MQTT] Ricevuto su %s: %s\n",topic.c_str(),payload.c_str());
+    if(on_message_cb != nullptr){
+        on_message_cb(topic.c_str(),payload.c_str());
+    }
 };
 
-void mqtt_manager_init(const char* subscribe_topic){
+void mqtt_manager_init(const char* subscribe_topic, mqtt_on_message_cb callback){
     saved_topic = subscribe_topic;
-
+    on_message_cb = callback;
     mqtt_client.begin(MQTT_BROKER, MQTT_PORT, net);
     mqtt_client.onMessage(messageReceived);
 }
@@ -59,6 +63,6 @@ bool mqtt_manager_subscribe(const String &topic){
     }
 }
 
-bool mqtt_manager_isConnected(){
+bool mqtt_manager_is_connected(){
     return mqtt_client.connected();
 }

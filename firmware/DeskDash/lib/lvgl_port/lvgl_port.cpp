@@ -7,7 +7,7 @@ void my_disp_flush(lv_disp_drv_t *disp_drv, const lv_area_t *area, lv_color_t *c
     uint32_t w = (area->x2 - area->x1 + 1);
     uint32_t h = (area->y2 - area->y1 + 1);
 
-    hw_draw_pixels(area->x1,area->y1,w,h,(uint16_t *)&color_p->full);
+    hw_draw_image(area->x1,area->y1,w,h,(uint16_t *)&color_p->full);
     
     lv_disp_flush_ready(disp_drv);
 }

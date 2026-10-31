@@ -16,7 +16,7 @@ void hardware_init(){
     ts.begin(touchSPI);
 }
 
-void hw_draw_pixels(int x, int y, int w, int h, uint16_t* color_data){
+void hw_draw_image(int x, int y, int w, int h, uint16_t* color_data){
     tft.pushImage(x,y,w,h,color_data);
 }
 
