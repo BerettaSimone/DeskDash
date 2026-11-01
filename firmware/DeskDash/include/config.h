@@ -1,6 +1,9 @@
 #pragma once
 #include <stdint.h>
 
+//ESP
+constexpr uint8_t NUMBER_OF_CORES = 2;
+
 // DISPLAY TOUCHSCREEN
 constexpr uint8_t DEFAULT_ROTATION = 1;
 constexpr uint16_t SCREEN_WIDTH = 320;

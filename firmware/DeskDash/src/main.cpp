@@ -1,6 +1,6 @@
 #include "hardware.h"
 #include "lvgl_port.h"
-#include "ui.h"
+#include "ui_manager.h"
 #include <Arduino.h>
 #include "wifi_manager.h"
 #include "mqtt_manager.h"
@@ -75,12 +75,12 @@ void loop() {
 
 void LVGL_Task(void *pvParameters){
   lvgl_init();
-  ui_init();
+  ui_manager_init();
   Mqtt_Message received_message;
   
   while(true){
     while(xQueueReceive(mqtt_messages,&received_message,0)){
-      ui_process_mqtt_message(received_message.topic,received_message.payload);
+      ui_manager_process_mqtt_message(received_message.topic,received_message.payload);
     }
 
     lvgl_handle();
