@@ -12,6 +12,7 @@
 #define LV_TICK_CUSTOM     1
 #define LV_TICK_CUSTOM_INCLUDE "Arduino.h"
 #define LV_TICK_CUSTOM_SYS_TIME_EXPR (millis())
+#define LV_DISP_DEF_REFR_PERIOD 16
 
 #define LV_FONT_MONTSERRAT_12    1
 #define LV_FONT_MONTSERRAT_16    1

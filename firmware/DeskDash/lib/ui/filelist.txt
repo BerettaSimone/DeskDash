@@ -1,3 +1,4 @@
+ui_HomeScreen.c
 ui_mqttTest.c
 ui.c
 ui_comp_hook.c

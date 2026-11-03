@@ -1,25 +1,21 @@
 #include <Arduino.h>
 #include <SPI.h>
-#include <TFT_eSPI.h>
 #include <XPT2046_Touchscreen.h>
 #include "hardware.h"
 #include "config.h"
 
-TFT_eSPI tft = TFT_eSPI();
+TFT_eSPI tft = TFT_eSPI();;
 XPT2046_Touchscreen ts(TOUCH_CS,TOUCH_INTERRUPT);
 SPIClass touchSPI(VSPI);
 
 void hardware_init(){
     tft.init();
+    tft.initDMA();
     tft.setRotation(DEFAULT_ROTATION);
     tft.setCursor(SCREEN_WIDTH/2,SCREEN_HEIGHT/2);
     tft.fillCircle(30,30,30,TFT_RED);
     touchSPI.begin(TOUCH_CK, TOUCH_MISO,TOUCH_MOSI,TOUCH_CS);
     ts.begin(touchSPI);
-}
-
-void hw_draw_image(int x, int y, int w, int h, uint16_t* color_data){
-    tft.pushImage(x,y,w,h,color_data);
 }
 
 bool hw_read_touch(TouchData &data){

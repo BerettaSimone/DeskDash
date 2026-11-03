@@ -8,14 +8,24 @@
 lv_obj_t * ui_mqttTest = NULL;
 lv_obj_t * ui_header = NULL;
 lv_obj_t * ui_Label2 = NULL;
+lv_obj_t * ui_btnDisconnect = NULL;
 lv_obj_t * ui_Label3 = NULL;
-lv_obj_t * ui_LogPanel = NULL;
+lv_obj_t * ui_logPanel = NULL;
 lv_obj_t * ui_cbxValue = NULL;
 lv_obj_t * ui_btnSend = NULL;
 lv_obj_t * ui_Label4 = NULL;
-lv_obj_t * ui_Label5 = NULL;
+lv_obj_t * ui_labelTouch = NULL;
 lv_obj_t * ui_wifiLabel = NULL;
 // event funtions
+void ui_event_mqttTest(lv_event_t * e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+
+    if(event_code == LV_EVENT_GESTURE &&  lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_RIGHT) {
+        lv_indev_wait_release(lv_indev_get_act());
+        _ui_screen_change(&ui_HomeScreen, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 250, 0, &ui_HomeScreen_screen_init);
+    }
+}
 
 // build funtions
 
@@ -37,6 +47,18 @@ void ui_mqttTest_screen_init(void)
     lv_obj_set_y(ui_Label2, -263);
     lv_obj_set_align(ui_Label2, LV_ALIGN_CENTER);
 
+    ui_btnDisconnect = lv_btn_create(ui_mqttTest);
+    lv_obj_set_width(ui_btnDisconnect, 15);
+    lv_obj_set_height(ui_btnDisconnect, 15);
+    lv_obj_set_x(ui_btnDisconnect, 23);
+    lv_obj_set_y(ui_btnDisconnect, -111);
+    lv_obj_set_align(ui_btnDisconnect, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_btnDisconnect, LV_OBJ_FLAG_SCROLL_ON_FOCUS);     /// Flags
+    lv_obj_clear_flag(ui_btnDisconnect, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_set_style_bg_color(ui_btnDisconnect, lv_color_hex(0xFB0000),
+                              (lv_style_selector_t)LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_btnDisconnect, 255, (lv_style_selector_t)LV_PART_MAIN | LV_STATE_DEFAULT);
+
     ui_Label3 = lv_label_create(ui_mqttTest);
     lv_obj_set_width(ui_Label3, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_Label3, LV_SIZE_CONTENT);    /// 1
@@ -44,14 +66,14 @@ void ui_mqttTest_screen_init(void)
     lv_obj_set_y(ui_Label3, 29);
     lv_label_set_text(ui_Label3, "Messaggi da: esp32/berry/comandi");
 
-    ui_LogPanel = lv_obj_create(ui_mqttTest);
-    lv_obj_set_width(ui_LogPanel, 293);
-    lv_obj_set_height(ui_LogPanel, 130);
-    lv_obj_set_x(ui_LogPanel, 0);
-    lv_obj_set_y(ui_LogPanel, -4);
-    lv_obj_set_align(ui_LogPanel, LV_ALIGN_CENTER);
-    lv_obj_set_flex_flow(ui_LogPanel, LV_FLEX_FLOW_ROW_WRAP);
-    lv_obj_set_flex_align(ui_LogPanel, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START);
+    ui_logPanel = lv_obj_create(ui_mqttTest);
+    lv_obj_set_width(ui_logPanel, 293);
+    lv_obj_set_height(ui_logPanel, 130);
+    lv_obj_set_x(ui_logPanel, 0);
+    lv_obj_set_y(ui_logPanel, -4);
+    lv_obj_set_align(ui_logPanel, LV_ALIGN_CENTER);
+    lv_obj_set_flex_flow(ui_logPanel, LV_FLEX_FLOW_ROW_WRAP);
+    lv_obj_set_flex_align(ui_logPanel, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START);
 
     ui_cbxValue = lv_checkbox_create(ui_mqttTest);
     lv_checkbox_set_text(ui_cbxValue, "Value to send");
@@ -77,13 +99,13 @@ void ui_mqttTest_screen_init(void)
     lv_obj_set_align(ui_Label4, LV_ALIGN_CENTER);
     lv_label_set_text(ui_Label4, "Invia valore");
 
-    ui_Label5 = lv_label_create(ui_mqttTest);
-    lv_obj_set_width(ui_Label5, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label5, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_Label5, -117);
-    lv_obj_set_y(ui_Label5, -110);
-    lv_obj_set_align(ui_Label5, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label5, "Mqtt_Test");
+    ui_labelTouch = lv_label_create(ui_mqttTest);
+    lv_obj_set_width(ui_labelTouch, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_labelTouch, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_labelTouch, -117);
+    lv_obj_set_y(ui_labelTouch, -110);
+    lv_obj_set_align(ui_labelTouch, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_labelTouch, "Mqtt_Test");
 
     ui_wifiLabel = lv_label_create(ui_mqttTest);
     lv_obj_set_width(ui_wifiLabel, LV_SIZE_CONTENT);   /// 1
@@ -92,6 +114,8 @@ void ui_mqttTest_screen_init(void)
     lv_obj_set_y(ui_wifiLabel, -111);
     lv_obj_set_align(ui_wifiLabel, LV_ALIGN_CENTER);
     lv_label_set_text(ui_wifiLabel, "WiFi: In attesa...");
+
+    lv_obj_add_event_cb(ui_mqttTest, ui_event_mqttTest, LV_EVENT_ALL, NULL);
 
 }
 
@@ -103,12 +127,13 @@ void ui_mqttTest_screen_destroy(void)
     ui_mqttTest = NULL;
     ui_header = NULL;
     ui_Label2 = NULL;
+    ui_btnDisconnect = NULL;
     ui_Label3 = NULL;
-    ui_LogPanel = NULL;
+    ui_logPanel = NULL;
     ui_cbxValue = NULL;
     ui_btnSend = NULL;
     ui_Label4 = NULL;
-    ui_Label5 = NULL;
+    ui_labelTouch = NULL;
     ui_wifiLabel = NULL;
 
 }

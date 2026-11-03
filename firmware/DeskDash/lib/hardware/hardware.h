@@ -1,6 +1,9 @@
 #pragma once
 
 #include <stdint.h>
+#include <TFT_eSPI.h>
+
+extern TFT_eSPI tft;
 
 struct TouchData {
     uint16_t x;

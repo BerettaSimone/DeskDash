@@ -25,11 +25,3 @@ constexpr char* PUBLISH_TOPIC = "esp32_test/berry/dati";
 
 constexpr char* MQTT_BROKER = "broker.hivemq.com";
 constexpr uint16_t MQTT_PORT = 1883;
-
-
-
-//freeRTOS events
-
-constexpr uint8_t WIFI_STA_MODE = (1<<0);
-constexpr uint8_t WIFI_CONNECTED = (1<<1);
-constexpr uint8_t MQTT_CONNECTED = (1<<4);
