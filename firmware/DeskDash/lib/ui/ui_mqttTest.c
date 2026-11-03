@@ -16,23 +16,6 @@ lv_obj_t * ui_Label4 = NULL;
 lv_obj_t * ui_Label5 = NULL;
 lv_obj_t * ui_wifiLabel = NULL;
 // event funtions
-void ui_event_mqttTest(lv_event_t * e)
-{
-    lv_event_code_t event_code = lv_event_get_code(e);
-
-    if(event_code == LV_EVENT_PRESSED) {
-        screenPressingCb(e);
-    }
-}
-
-void ui_event_btnSend(lv_event_t * e)
-{
-    lv_event_code_t event_code = lv_event_get_code(e);
-
-    if(event_code == LV_EVENT_CLICKED) {
-        btnSendCallback(e);
-    }
-}
 
 // build funtions
 
@@ -67,7 +50,7 @@ void ui_mqttTest_screen_init(void)
     lv_obj_set_x(ui_LogPanel, 0);
     lv_obj_set_y(ui_LogPanel, -4);
     lv_obj_set_align(ui_LogPanel, LV_ALIGN_CENTER);
-    lv_obj_set_flex_flow(ui_LogPanel, LV_FLEX_FLOW_COLUMN_WRAP);
+    lv_obj_set_flex_flow(ui_LogPanel, LV_FLEX_FLOW_ROW_WRAP);
     lv_obj_set_flex_align(ui_LogPanel, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START);
 
     ui_cbxValue = lv_checkbox_create(ui_mqttTest);
@@ -109,9 +92,6 @@ void ui_mqttTest_screen_init(void)
     lv_obj_set_y(ui_wifiLabel, -111);
     lv_obj_set_align(ui_wifiLabel, LV_ALIGN_CENTER);
     lv_label_set_text(ui_wifiLabel, "WiFi: In attesa...");
-
-    lv_obj_add_event_cb(ui_btnSend, ui_event_btnSend, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(ui_mqttTest, ui_event_mqttTest, LV_EVENT_ALL, NULL);
 
 }
 

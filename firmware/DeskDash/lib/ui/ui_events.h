@@ -10,9 +10,6 @@
 extern "C" {
 #endif
 
-void screenPressingCb(lv_event_t * e);
-void btnSendCallback(lv_event_t * e);
-
 #ifdef __cplusplus
 } /*extern "C"*/
 #endif

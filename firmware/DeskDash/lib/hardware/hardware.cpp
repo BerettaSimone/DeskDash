@@ -12,6 +12,8 @@ SPIClass touchSPI(VSPI);
 void hardware_init(){
     tft.init();
     tft.setRotation(DEFAULT_ROTATION);
+    tft.setCursor(SCREEN_WIDTH/2,SCREEN_HEIGHT/2);
+    tft.fillCircle(30,30,30,TFT_RED);
     touchSPI.begin(TOUCH_CK, TOUCH_MISO,TOUCH_MOSI,TOUCH_CS);
     ts.begin(touchSPI);
 }

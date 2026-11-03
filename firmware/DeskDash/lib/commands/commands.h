@@ -1,22 +1,24 @@
-// #pragma once
+#pragma once
+#include "config.h"
 
-// struct MQTT_Params{
-//     char topic[64];
-//     char payload[256];
-// };
+typedef void(*CommandAction)(void* payload);
 
-// union Command_Params{
-//     MQTT_Params params;
-// };
+struct MqttMessage{
+    char topic[MAX_TOPIC_LEN];
+    char payload[MAX_PAYLOAD_LEN];
+};
 
-// struct Command{
-//     Command_Id cmd;
-//     Command_Params params;
-// };
+union CommandPayload{
+    bool boolean_val;
+    MqttMessage mqtt_message;
+};
 
-// void WIFI_DISCONNECT();
-// void MQTT_SEND(char* topic, char* payload);
+struct Command{
+    CommandAction action;
+    CommandPayload payload;
+};
 
-// void queue_for_execution(Command command, uint8_t core);
-
-
+Command cmd_create_wifi_disconnect();
+Command cmd_create_mqtt_send(const char* topic, const char* message);
+Command cmd_create_ui_wifi_update(bool is_connected);
+Command cmd_create_ui_process_mqtt_message(const char* topic, const char* message);

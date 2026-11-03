@@ -13,14 +13,12 @@ extern "C" {
 // SCREEN: ui_mqttTest
 extern void ui_mqttTest_screen_init(void);
 extern void ui_mqttTest_screen_destroy(void);
-extern void ui_event_mqttTest(lv_event_t * e);
 extern lv_obj_t * ui_mqttTest;
 extern lv_obj_t * ui_header;
 extern lv_obj_t * ui_Label2;
 extern lv_obj_t * ui_Label3;
 extern lv_obj_t * ui_LogPanel;
 extern lv_obj_t * ui_cbxValue;
-extern void ui_event_btnSend(lv_event_t * e);
 extern lv_obj_t * ui_btnSend;
 extern lv_obj_t * ui_Label4;
 extern lv_obj_t * ui_Label5;

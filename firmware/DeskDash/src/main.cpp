@@ -5,68 +5,35 @@
 #include "wifi_manager.h"
 #include "mqtt_manager.h"
 #include "config.h"
+#include "commands.h"
 #include "env.h"
 
-struct Mqtt_Message{
-  char topic[MAX_TOPIC_LEN];
-  char payload[MAX_PAYLOAD_LEN];
-};
+//coda di comandi in ingresso per ogni task
+QueueHandle_t ui_inbox;
+QueueHandle_t wifi_inbox;
+QueueHandle_t mqtt_inbox;
+void execute_all_queued_commands(QueueHandle_t queue);
 
-QueueHandle_t mqtt_messages = NULL;
-
+//tasks 
 void LVGL_Task(void *pvParameters);
-
 void WIFI_Task(void *pvParameters);
-
 void MQTT_Task(void *pvParameters);
 
-void mqtt_message_received_cb(const char* topic, const char* payload){
-  Mqtt_Message new_message;
-  strlcpy(new_message.topic,topic,MAX_TOPIC_LEN);
-  strlcpy(new_message.payload,payload,MAX_PAYLOAD_LEN);
+void mqtt_message_received_cb(const char* topic, const char* payload);
 
-  if(xQueueSend(mqtt_messages,&new_message,0)!=pdTRUE){
-    Serial.println("[MAIN] Coda piena, pacchetto MQTT ricevuto e scartato!");
-  }
-}
 
 void setup() {
   Serial.begin(115200);
-  mqtt_messages = xQueueCreate(3, sizeof(Mqtt_Message));
+
+  mqtt_inbox = xQueueCreate(5,sizeof(Command));
+  wifi_inbox = xQueueCreate(5,sizeof(Command));
+  ui_inbox = xQueueCreate(5,sizeof(Command));
 
   hardware_init();
-  mqtt_manager_init(SUBSCRIBE_TOPIC, mqtt_message_received_cb);
 
-  xTaskCreatePinnedToCore(
-    WIFI_Task,
-    "WIFI_Task",
-    4096,
-    NULL,
-    1,
-    NULL,
-    0
-  );
-
-  xTaskCreatePinnedToCore(
-    LVGL_Task,
-    "LVGL_Task",
-    8192,
-    NULL,
-    1,
-    NULL,
-    1
-  );
-
-  xTaskCreatePinnedToCore(
-    MQTT_Task,
-    "MQTT_Task",
-    4096,
-    NULL,
-    1,
-    NULL,
-    0
-  );
-
+  xTaskCreatePinnedToCore(WIFI_Task,"WIFI_Task",4096,NULL,1,NULL,0);
+  xTaskCreatePinnedToCore(LVGL_Task,"LVGL_Task",8192,NULL,1,NULL,1);
+  xTaskCreatePinnedToCore(MQTT_Task,"MQTT_Task",4096,NULL,1,NULL,0);
 }
 
 void loop() {
@@ -75,40 +42,48 @@ void loop() {
 
 void LVGL_Task(void *pvParameters){
   lvgl_init();
-  ui_manager_init();
-  Mqtt_Message received_message;
-  
-  while(true){
-    while(xQueueReceive(mqtt_messages,&received_message,0)){
-      ui_manager_process_mqtt_message(received_message.topic,received_message.payload);
-    }
+  ui_manager_init(wifi_inbox,mqtt_inbox);
 
+  while(true){
+    execute_all_queued_commands(ui_inbox);
     lvgl_handle();
     vTaskDelay(pdMS_TO_TICKS(5));
   }
-
 }
 
 void WIFI_Task(void *pvParameters){
+  wifi_manager_init(ui_inbox, WIFI_SSID, WIFI_PASSWORD);
+
   while(true){
-    if(wifi_manager_is_connected()){
-      vTaskDelay(pdMS_TO_TICKS(5000));
-    } else {
-      wifi_manager_init();
-    }
+    execute_all_queued_commands(wifi_inbox);
+    wifi_manager_handle();
   }
 }
 
 void MQTT_Task(void *pvParameters){
+  mqtt_manager_init(SUBSCRIBE_TOPIC, mqtt_message_received_cb);
+
   while(true){
+    execute_all_queued_commands(mqtt_inbox);
     mqtt_manager_handle();
-
-   TouchData td;
-   if(hw_read_touch(td)){
-        String dato  = "X: " + String(td.x) + " Y: " + String(td.y);
-        mqtt_manager_publish(PUBLISH_TOPIC, dato.c_str());
-   }
-
     vTaskDelay(pdMS_TO_TICKS(50));
+  }
+}
+
+
+void execute_all_queued_commands(QueueHandle_t queue){
+  Command cmd;  
+  while(xQueueReceive(queue,&cmd,0)){
+      if(cmd.action!=nullptr){
+        cmd.action(&cmd.payload);
+      }
+    }
+}
+
+void mqtt_message_received_cb(const char* topic, const char* payload){
+  Command cmd = cmd_create_ui_process_mqtt_message(topic,payload);
+
+  if(xQueueSend(ui_inbox,&cmd,0)!=pdTRUE){
+    Serial.println("[MAIN] Coda piena, pacchetto MQTT ricevuto e scartato!");
   }
 }

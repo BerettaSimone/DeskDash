@@ -1,8 +1,8 @@
 #include <MQTT.h>
-#include "mqtt_manager.h"
-#include "wifi_manager.h"
 #include <WiFi.h>
+#include "mqtt_manager.h"
 #include "config.h"
+
 
 static MQTTClient mqtt_client;
 static WiFiClient net;
@@ -10,7 +10,7 @@ static WiFiClient net;
 static mqtt_on_message_cb on_message_cb = nullptr;
 static const char* saved_topic = nullptr;
 
-void messageReceived(String &topic, String &payload){
+static void messageReceived(String &topic, String &payload){
     Serial.printf("[MQTT] Ricevuto su %s: %s\n",topic.c_str(),payload.c_str());
     if(on_message_cb != nullptr){
         on_message_cb(topic.c_str(),payload.c_str());
@@ -26,7 +26,7 @@ void mqtt_manager_init(const char* subscribe_topic, mqtt_on_message_cb callback)
 
 void mqtt_manager_handle(){
     mqtt_client.loop();
-    delay(10);
+    vTaskDelay(pdMS_TO_TICKS(10));
 
     if(!mqtt_client.connected()){
         Serial.print("MQTT_Manager: tentativo di connessione...");
@@ -38,6 +38,7 @@ void mqtt_manager_handle(){
             mqtt_client.subscribe(saved_topic);
         } else {
             Serial.println(" !Fallito.");
+            vTaskDelay(1000);
         }
     }
 
@@ -52,10 +53,10 @@ void mqtt_manager_publish(const char* topic, const char* payload){
     }
 }
 
-bool mqtt_manager_subscribe(const String &topic){
+bool mqtt_manager_subscribe(const char* topic){
     if(mqtt_client.connected()){
         mqtt_client.subscribe(topic);
-        Serial.printf("[MQTT] Iscritto al topic: %s \n",topic.c_str());
+        Serial.printf("[MQTT] Iscritto al topic: %s \n",topic);
         return true;
     } else{
         Serial.println("[MQTT] ! Errore: impossibile iscriversi, client disconnesso.");
