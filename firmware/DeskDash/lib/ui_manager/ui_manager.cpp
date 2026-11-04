@@ -49,7 +49,6 @@ void ui_set_wifi_state(bool connected){
 /*
   TIMER CALLBACKS
 */
-
 static void touch_polling_timer_cb(lv_timer_t* timer){
   lv_indev_t * indev = lv_indev_get_next(NULL);
   if(indev == NULL) return;
@@ -63,7 +62,7 @@ static void touch_polling_timer_cb(lv_timer_t* timer){
   lv_label_set_text(ui_labelTouch,message.c_str());
 }
 
-static void update_time_timer_cb(lv_timer_t * timer){
+static void update_clock_timer_cb(lv_timer_t * timer){
     struct tm timeinfo;
     if (!getLocalTime(&timeinfo)) {
     return;
@@ -138,7 +137,7 @@ void ui_manager_init(QueueHandle_t wifi_queue, QueueHandle_t mqtt_queue){
     lv_obj_add_event_cb(ui_btnSend,btnSend_event_cb,LV_EVENT_CLICKED,NULL);
     //timer
     lv_timer_create(touch_polling_timer_cb,50,NULL);
-    lv_timer_create(update_time_timer_cb,500,NULL);
+    lv_timer_create(update_clock_timer_cb,500,NULL);
 
 
 }

@@ -2,10 +2,9 @@
 #include <SPI.h>
 #include <XPT2046_Touchscreen.h>
 #include "hardware.h"
-#include "config.h"
 
 TFT_eSPI tft = TFT_eSPI();;
-XPT2046_Touchscreen ts(TOUCH_CS,TOUCH_INTERRUPT);
+XPT2046_Touchscreen ts(XPT_TOUCH_CS,XPT_TOUCH_INTERRUPT);
 SPIClass touchSPI(VSPI);
 
 void hardware_init(){
@@ -14,7 +13,7 @@ void hardware_init(){
     tft.setRotation(DEFAULT_ROTATION);
     tft.setCursor(SCREEN_WIDTH/2,SCREEN_HEIGHT/2);
     tft.fillCircle(30,30,30,TFT_RED);
-    touchSPI.begin(TOUCH_CK, TOUCH_MISO,TOUCH_MOSI,TOUCH_CS);
+    touchSPI.begin(XPT_TOUCH_CK, XPT_TOUCH_MISO,XPT_TOUCH_MOSI,XPT_TOUCH_CS);
     ts.begin(touchSPI);
 }
 
