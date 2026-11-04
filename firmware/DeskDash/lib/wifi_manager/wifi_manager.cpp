@@ -1,4 +1,5 @@
 #include <WiFi.h>
+#include "time.h"
 #include "wifi_manager.h"
 #include "commands.h"
 
@@ -6,6 +7,9 @@ static QueueHandle_t ui_inbox;
 static WiFi_Mode mode;
 static char* last_ssid;
 static char* last_password;
+
+const char* POSIX_TZ = "CET-1CEST,M3.5.0/2,M10.5.0/3";
+void get_time();
 
 void wifi_manager_init(QueueHandle_t ui_queue){
     ui_inbox = ui_queue;
@@ -50,13 +54,14 @@ void wifi_manager_connect(char* ssid, char* password){
 
     Command cmd = cmd_create_ui_wifi_update(true);
     xQueueSend(ui_inbox,&cmd,0);
+    get_time();
     Serial.print("\nWiFi_Manager: Connesso! IP: ");
     Serial.println(WiFi.localIP());
 }
 
 void wifi_manager_handle(){
     if(mode == STATION){
-        if(wifi_manager_is_connected()){
+        if(wifi_manager_is_connected()){;
             vTaskDelay(pdMS_TO_TICKS(5000));
         } else {
             Command cmd = cmd_create_ui_wifi_update(false);
@@ -79,3 +84,15 @@ void wifi_manager_disconnect(){
         WiFi.disconnect();
     }
 }
+
+
+
+void get_time(){
+    setenv("TZ",POSIX_TZ,1);
+    tzset();
+
+    setlocale(LC_TIME, "it_IT.UTF-8");
+    configTzTime(POSIX_TZ,"pool.ntp.org","time.nist.gov");
+}
+
+

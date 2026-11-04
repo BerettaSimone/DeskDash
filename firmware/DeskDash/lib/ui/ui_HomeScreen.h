@@ -15,7 +15,22 @@ extern void ui_HomeScreen_screen_init(void);
 extern void ui_HomeScreen_screen_destroy(void);
 extern void ui_event_HomeScreen(lv_event_t * e);
 extern lv_obj_t * ui_HomeScreen;
-extern lv_obj_t * ui_lblClock;
+extern lv_obj_t * ui_clockHeader;
+extern lv_obj_t * ui_Label5;
+extern lv_obj_t * ui_Label6;
+extern lv_obj_t * ui_Panel3;
+extern lv_obj_t * ui_lblHour;
+extern lv_obj_t * ui_lblPoints;
+extern lv_obj_t * ui_lblMin;
+extern lv_obj_t * ui_secondsBar;
+extern lv_obj_t * ui_Panel4;
+extern lv_obj_t * ui_lblWday;
+extern lv_obj_t * ui_lblDay;
+extern lv_obj_t * ui_lblMonth;
+extern lv_obj_t * ui_Panel5;
+extern lv_obj_t * ui_Panel6;
+extern lv_obj_t * ui_Panel1;
+extern lv_obj_t * ui_Panel2;
 // CUSTOM VARIABLES
 
 #ifdef __cplusplus

@@ -9,6 +9,22 @@ static QueueHandle_t wifi_inbox;
 static bool last_wifi_state = false;
 lv_point_t last_touch_point;
 
+
+static const char* days[] = {"Domenica","Lunedi","Martedi","Mercoledi","Giovedi","Venerdi","Sabato"};
+static const char * months[] = {
+    "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", 
+    "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"
+};
+
+static uint8_t last_hour = 254;
+static uint8_t last_min = 254;
+static uint8_t last_sec = 254;
+static uint8_t last_day = 254;
+static uint8_t last_month = 254;
+
+/*
+  GUI UPDATE 
+*/
 void ui_process_mqtt_message(const char* topic, const char* payload){
   String new_line = "Ricevuto: " + String(payload) +"\n";
   lv_obj_t * log = lv_label_create(ui_logPanel);
@@ -30,6 +46,9 @@ void ui_set_wifi_state(bool connected){
   }
 }
 
+/*
+  TIMER CALLBACKS
+*/
 
 static void touch_polling_timer_cb(lv_timer_t* timer){
   lv_indev_t * indev = lv_indev_get_next(NULL);
@@ -44,6 +63,44 @@ static void touch_polling_timer_cb(lv_timer_t* timer){
   lv_label_set_text(ui_labelTouch,message.c_str());
 }
 
+static void update_time_timer_cb(lv_timer_t * timer){
+    struct tm timeinfo;
+    if (!getLocalTime(&timeinfo)) {
+    return;
+  }
+  if(last_month != timeinfo.tm_mon){
+    last_month = timeinfo.tm_mon;
+    lv_label_set_text(ui_lblMonth, months[last_month]);
+  }
+  if(last_day != timeinfo.tm_wday){
+    last_day = timeinfo.tm_wday;
+    lv_label_set_text(ui_lblWday, days[last_day]);
+    lv_label_set_text_fmt(ui_lblDay,", %02d",timeinfo.tm_mday);
+  }
+  if(last_hour!=timeinfo.tm_hour){
+    last_hour = timeinfo.tm_hour;
+    lv_label_set_text_fmt(ui_lblHour,"%02d",timeinfo.tm_hour);
+  }
+  if(last_min != timeinfo.tm_min){
+    last_min = timeinfo.tm_min;
+    lv_label_set_text_fmt(ui_lblMin,"%02d",timeinfo.tm_min);
+  }
+  if(last_sec != timeinfo.tm_sec){
+    last_sec = timeinfo.tm_sec;
+    lv_bar_set_value(ui_secondsBar,timeinfo.tm_sec,LV_ANIM_ON);
+
+    if(last_sec%2==0){
+      lv_obj_set_style_text_color(ui_lblPoints,lv_color_hex(0x2095f6),LV_PART_MAIN | LV_STATE_DEFAULT);
+    }
+    else{
+      lv_obj_set_style_text_color(ui_lblPoints,lv_color_hex(0x003e71),LV_PART_MAIN | LV_STATE_DEFAULT);
+    } 
+  }
+}
+
+/*
+  BUTTON EVENTS  
+*/
 static void btnDisconnect_event_cb(lv_event_t *e){
   lv_indev_t * indev = lv_indev_get_act();
   if(indev == NULL) return;
@@ -65,6 +122,8 @@ static void btnSend_event_cb(lv_event_t *e){
   xQueueSend(mqtt_inbox,&cmd,0);
 }
 
+
+
 static void draw_home_screen(){
   ui_init();
 }
@@ -79,5 +138,7 @@ void ui_manager_init(QueueHandle_t wifi_queue, QueueHandle_t mqtt_queue){
     lv_obj_add_event_cb(ui_btnSend,btnSend_event_cb,LV_EVENT_CLICKED,NULL);
     //timer
     lv_timer_create(touch_polling_timer_cb,50,NULL);
+    lv_timer_create(update_time_timer_cb,500,NULL);
+
 
 }

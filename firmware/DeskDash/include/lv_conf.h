@@ -14,10 +14,10 @@
 #define LV_TICK_CUSTOM_SYS_TIME_EXPR (millis())
 #define LV_DISP_DEF_REFR_PERIOD 16
 
-#define LV_FONT_MONTSERRAT_12    1
-#define LV_FONT_MONTSERRAT_16    1
-#define LV_FONT_MONTSERRAT_24    1
-#define LV_FONT_MONTSERRAT_48    1 
+#define LV_FONT_MONTSERRAT_20    1
+
+#define LV_USE_PERF_MONITOR 1
+#define LV_USE_MEM_MONITOR 1
 
 #define LV_USE_ARC        1
 #define LV_USE_CHART      1
