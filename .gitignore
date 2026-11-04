@@ -1,3 +1,6 @@
 .pio
 .vscode
 include/env.h
+python_scripts
+python_scripts/venv
+python_scripts/__pycache__
