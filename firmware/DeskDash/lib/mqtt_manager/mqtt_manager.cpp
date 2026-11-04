@@ -8,7 +8,6 @@ static MQTTClient mqtt_client;
 static WiFiClient net;
 
 static mqtt_on_message_cb on_message_cb = nullptr;
-static const char* saved_topic = nullptr;
 
 static void messageReceived(String &topic, String &payload){
     Serial.printf("[MQTT] Ricevuto su %s: %s\n",topic.c_str(),payload.c_str());
@@ -17,8 +16,7 @@ static void messageReceived(String &topic, String &payload){
     }
 };
 
-void mqtt_manager_init(const char* subscribe_topic, mqtt_on_message_cb callback){
-    saved_topic = subscribe_topic;
+void mqtt_manager_init(mqtt_on_message_cb callback){    
     on_message_cb = callback;
     mqtt_client.begin(MQTT_BROKER, MQTT_PORT, net);
     mqtt_client.onMessage(messageReceived);
@@ -35,7 +33,9 @@ void mqtt_manager_handle(){
 
         if(mqtt_client.connect(clientId.c_str())){
             Serial.println(" CONNESSO!");
-            mqtt_client.subscribe(saved_topic);
+            for(int i = 0; i<SUBSCRIBE_TOPICS_LEN; i++){
+                mqtt_client.subscribe(SUBSCRIBE_TOPICS[i]);
+            }
         } else {
             Serial.println(" !Fallito.");
             vTaskDelay(1000);

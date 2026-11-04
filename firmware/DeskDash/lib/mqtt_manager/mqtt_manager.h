@@ -2,7 +2,7 @@
 
 typedef void(*mqtt_on_message_cb)(const char* topic, const char* payload);
 
-void mqtt_manager_init(const char* subscribe_topic, mqtt_on_message_cb on_message_cb);
+void mqtt_manager_init(mqtt_on_message_cb on_message_cb);
 
 void mqtt_manager_handle();
 

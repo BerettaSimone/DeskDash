@@ -2,6 +2,7 @@
 #include "lvgl_port.h"
 #include "ui_manager.h"
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include "wifi_manager.h"
 #include "mqtt_manager.h"
 #include "config.h"
@@ -19,7 +20,11 @@ void LVGL_Task(void *pvParameters);
 void WIFI_Task(void *pvParameters);
 void MQTT_Task(void *pvParameters);
 
+//funzioni
 void mqtt_message_received_cb(const char* topic, const char* payload);
+void mqtt_message_received_weather_topic(const char* payload, char* formatted_string, size_t out_len);
+
+void queue_command(QueueHandle_t queue, Command &command);
 
 
 void setup() {
@@ -61,7 +66,7 @@ void WIFI_Task(void *pvParameters){
 }
 
 void MQTT_Task(void *pvParameters){
-  mqtt_manager_init(SUBSCRIBE_TOPIC, mqtt_message_received_cb);
+  mqtt_manager_init(mqtt_message_received_cb);
 
   while(true){
     execute_all_queued_commands(mqtt_inbox);
@@ -81,9 +86,37 @@ void execute_all_queued_commands(QueueHandle_t queue){
 }
 
 void mqtt_message_received_cb(const char* topic, const char* payload){
-  Command cmd = cmd_create_ui_process_mqtt_message(topic,payload);
+  Command log_message = cmd_create_ui_log_mqtt_message(topic,payload);
+  queue_command(ui_inbox,log_message);
 
-  if(xQueueSend(ui_inbox,&cmd,0)!=pdTRUE){
-    Serial.println("[MAIN] Coda piena, pacchetto MQTT ricevuto e scartato!");
+  if(strcmp(topic,WEATHER_TOPIC)==0){
+    char weather_info[WEATHER_INFO_STR_LEN];
+
+    mqtt_message_received_weather_topic(payload,weather_info,WEATHER_INFO_STR_LEN);
+    Command weather_update = cmd_create_ui_weather_update(weather_info);
+    queue_command(ui_inbox,weather_update);
   }
+}
+
+
+void queue_command(QueueHandle_t queue, Command &command){
+  if(xQueueSend(queue,&command,0)!=pdTRUE){
+    Serial.println("[MAIN] Coda piena, comando scartato!");
+  }
+}
+
+void mqtt_message_received_weather_topic(const char* payload, char* formatted_string, size_t out_len){
+  JsonDocument doc;
+  DeserializationError error = deserializeJson(doc,payload,MAX_PAYLOAD_LEN);
+  if(error){
+    Serial.println("[MAIN] Errore deserializzazione JSON");
+    strlcpy(formatted_string, "Errore JSON", out_len); 
+    return;
+  }
+    
+  float tmp = doc["tmp"]|0.0f;
+  const char* w_code_string = doc["code_string"];
+  int tmp_rounded = (int)round(tmp);
+  snprintf(formatted_string,out_len,"%d°C - %s",tmp_rounded,w_code_string);
+  return;
 }

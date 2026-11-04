@@ -17,7 +17,7 @@ extern void ui_event_HomeScreen(lv_event_t * e);
 extern lv_obj_t * ui_HomeScreen;
 extern lv_obj_t * ui_clockHeader;
 extern lv_obj_t * ui_Label5;
-extern lv_obj_t * ui_Label6;
+extern lv_obj_t * ui_lblWeather;
 extern lv_obj_t * ui_Panel3;
 extern lv_obj_t * ui_lblHour;
 extern lv_obj_t * ui_lblPoints;

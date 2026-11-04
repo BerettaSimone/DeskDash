@@ -62,9 +62,9 @@ void ui_mqttTest_screen_init(void)
     ui_Label3 = lv_label_create(ui_mqttTest);
     lv_obj_set_width(ui_Label3, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_Label3, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_Label3, 38);
-    lv_obj_set_y(ui_Label3, 29);
-    lv_label_set_text(ui_Label3, "Messaggi da: esp32/berry/comandi");
+    lv_obj_set_x(ui_Label3, 76);
+    lv_obj_set_y(ui_Label3, 30);
+    lv_label_set_text(ui_Label3, "Messaggi MQTT ricevuti");
 
     ui_logPanel = lv_obj_create(ui_mqttTest);
     lv_obj_set_width(ui_logPanel, 293);
@@ -72,7 +72,7 @@ void ui_mqttTest_screen_init(void)
     lv_obj_set_x(ui_logPanel, 0);
     lv_obj_set_y(ui_logPanel, -4);
     lv_obj_set_align(ui_logPanel, LV_ALIGN_CENTER);
-    lv_obj_set_flex_flow(ui_logPanel, LV_FLEX_FLOW_COLUMN_WRAP);
+    lv_obj_set_flex_flow(ui_logPanel, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_flex_align(ui_logPanel, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START);
 
     ui_cbxValue = lv_checkbox_create(ui_mqttTest);

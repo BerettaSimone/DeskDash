@@ -22,11 +22,13 @@ static uint8_t last_sec = 254;
 static uint8_t last_day = 254;
 static uint8_t last_month = 254;
 
+static char last_weather_string[WEATHER_INFO_STR_LEN];
+
 /*
   GUI UPDATE 
 */
-void ui_process_mqtt_message(const char* topic, const char* payload){
-  String new_line = "Ricevuto: " + String(payload) +"\n";
+void ui_log_mqtt_message(const char* topic, const char* payload){
+  String new_line = "Ricevuto: " + String(payload) +" Topic: " + String(topic) +"\n";
   lv_obj_t * log = lv_label_create(ui_logPanel);
   lv_label_set_text(log,new_line.c_str());
 }
@@ -45,6 +47,14 @@ void ui_set_wifi_state(bool connected){
     }
   }
 }
+
+void ui_update_weather_info(const char* w_info_string){
+  if(strcmp(last_weather_string,w_info_string)!=0){
+    strlcpy(last_weather_string,w_info_string,sizeof(last_weather_string));
+    lv_label_set_text(ui_lblWeather,last_weather_string);
+  }
+}
+
 
 /*
   TIMER CALLBACKS

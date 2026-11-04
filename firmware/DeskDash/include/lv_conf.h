@@ -16,7 +16,7 @@
 
 #define LV_FONT_MONTSERRAT_20    1
 
-#define LV_USE_PERF_MONITOR 1
+// #define LV_USE_PERF_MONITOR 1
 #define LV_USE_MEM_MONITOR 1
 
 #define LV_USE_ARC        1

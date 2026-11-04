@@ -8,7 +8,7 @@
 lv_obj_t * ui_HomeScreen = NULL;
 lv_obj_t * ui_clockHeader = NULL;
 lv_obj_t * ui_Label5 = NULL;
-lv_obj_t * ui_Label6 = NULL;
+lv_obj_t * ui_lblWeather = NULL;
 lv_obj_t * ui_Panel3 = NULL;
 lv_obj_t * ui_lblHour = NULL;
 lv_obj_t * ui_lblPoints = NULL;
@@ -57,16 +57,15 @@ void ui_HomeScreen_screen_init(void)
     lv_label_set_text(ui_Label5, "Orologio");
     lv_obj_set_style_text_font(ui_Label5, &lv_font_montserrat_14, (lv_style_selector_t)LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    ui_Label6 = lv_label_create(ui_clockHeader);
-    lv_obj_set_width(ui_Label6, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label6, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_Label6, 6);
-    lv_obj_set_y(ui_Label6, 0);
-    lv_obj_set_align(ui_Label6, LV_ALIGN_RIGHT_MID);
-    lv_label_set_text(ui_Label6, "14°C - Nuvoloso");
-    lv_obj_set_style_text_color(ui_Label6, lv_color_hex(0x8B949E), (lv_style_selector_t)LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_opa(ui_Label6, 255, (lv_style_selector_t)LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_Label6, &lv_font_montserrat_14, (lv_style_selector_t)LV_PART_MAIN | LV_STATE_DEFAULT);
+    ui_lblWeather = lv_label_create(ui_clockHeader);
+    lv_obj_set_width(ui_lblWeather, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_lblWeather, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_align(ui_lblWeather, LV_ALIGN_RIGHT_MID);
+    lv_label_set_text(ui_lblWeather, "Loading...");
+    lv_obj_set_style_text_color(ui_lblWeather, lv_color_hex(0x8B949E),
+                                (lv_style_selector_t)LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui_lblWeather, 255, (lv_style_selector_t)LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_lblWeather, &lv_font_montserrat_14, (lv_style_selector_t)LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_Panel3 = lv_obj_create(ui_HomeScreen);
     lv_obj_set_width(ui_Panel3, 320);
@@ -214,7 +213,7 @@ void ui_HomeScreen_screen_destroy(void)
     ui_HomeScreen = NULL;
     ui_clockHeader = NULL;
     ui_Label5 = NULL;
-    ui_Label6 = NULL;
+    ui_lblWeather = NULL;
     ui_Panel3 = NULL;
     ui_lblHour = NULL;
     ui_lblPoints = NULL;
