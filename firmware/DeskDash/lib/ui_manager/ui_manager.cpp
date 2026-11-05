@@ -84,7 +84,7 @@ static void update_clock_timer_cb(lv_timer_t * timer){
   if(last_day != timeinfo.tm_wday){
     last_day = timeinfo.tm_wday;
     lv_label_set_text(ui_lblWday, days[last_day]);
-    lv_label_set_text_fmt(ui_lblDay,", %02d",timeinfo.tm_mday);
+    lv_label_set_text_fmt(ui_lblDay,"%02d",timeinfo.tm_mday);
   }
   if(last_hour!=timeinfo.tm_hour){
     last_hour = timeinfo.tm_hour;

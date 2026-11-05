@@ -23,7 +23,7 @@ void ui_event_mqttTest(lv_event_t * e)
 
     if(event_code == LV_EVENT_GESTURE &&  lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_RIGHT) {
         lv_indev_wait_release(lv_indev_get_act());
-        _ui_screen_change(&ui_HomeScreen, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 250, 0, &ui_HomeScreen_screen_init);
+        _ui_screen_change(&ui_pcStatsScreen, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 250, 0, &ui_pcStatsScreen_screen_init);
     }
 }
 

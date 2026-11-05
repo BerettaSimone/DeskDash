@@ -23,12 +23,15 @@ extern "C" {
 #endif
 
 #include "ui_helpers.h"
+#include "ui_comp.h"
+#include "ui_comp_hook.h"
 #include "ui_events.h"
 
 ///////////////////// SCREENS ////////////////////
 
 #include "ui_HomeScreen.h"
 #include "ui_mqttTest.h"
+#include "ui_pcStatsScreen.h"
 
 ///////////////////// VARIABLES ////////////////////
 
@@ -39,6 +42,11 @@ extern lv_obj_t * ui____initial_actions0;
 
 // FONTS
 LV_FONT_DECLARE(ui_font_RobotoMonoBold);
+LV_FONT_DECLARE(ui_font_RobotoMonoBold18);
+LV_FONT_DECLARE(ui_font_RobotoMonoBold28);
+LV_FONT_DECLARE(ui_font_RobotoFlex26);
+LV_FONT_DECLARE(ui_font_RobotoFlex20);
+LV_FONT_DECLARE(ui_font_RobotoMono46);
 
 // UI INIT
 void ui_init(void);

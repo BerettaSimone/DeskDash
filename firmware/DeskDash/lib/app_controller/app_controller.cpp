@@ -5,7 +5,6 @@
 
 static void mqtt_message_received_weather_topic(const char* payload, char* formatted_string, size_t out_len);
 
-
 void mqtt_message_received_cb(const char* topic, const char* payload){
   Command log_message = cmd_create_ui_log_mqtt_message(topic,payload);
   queue_command(ui_inbox,log_message);

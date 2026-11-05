@@ -1,8 +1,17 @@
-SET(SOURCES ui_HomeScreen.c
+SET(SOURCES ui_comp_navbar.c
+    ui_comp_statscard.c
+    ui_comp.c
+    ui_HomeScreen.c
     ui_mqttTest.c
+    ui_pcStatsScreen.c
     ui.c
     ui_comp_hook.c
     ui_helpers.c
-    fonts/ui_font_RobotoMonoBold.c)
+    fonts/ui_font_RobotoMonoBold.c
+    fonts/ui_font_RobotoMonoBold18.c
+    fonts/ui_font_RobotoMonoBold28.c
+    fonts/ui_font_RobotoFlex26.c
+    fonts/ui_font_RobotoFlex20.c
+    fonts/ui_font_RobotoMono46.c)
 
 add_library(ui ${SOURCES})
